@@ -4,10 +4,8 @@ import com.sorocode.voice_access_be_demo.enter_log.entity.EnterLog;
 import com.sorocode.voice_access_be_demo.global.BaseEntity;
 import com.sorocode.voice_access_be_demo.member.enums.GenderEnum;
 import jakarta.persistence.*;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-
 
 import java.time.LocalDate;
 import java.util.List;
