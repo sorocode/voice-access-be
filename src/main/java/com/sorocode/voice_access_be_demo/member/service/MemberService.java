@@ -8,9 +8,9 @@ import java.io.IOException;
 public interface MemberService {
     void validateVoiceFile(MultipartFile voiceFile);
 
-    String saveVoiceFile(MultipartFile voiceFile) throws IOException;
+    String saveVoiceFile(MultipartFile voiceFile, String userName);
 
-    void saveNewMember(SignUpRequestDto signUpRequestDto, MultipartFile voiceFile) throws IOException;
+    void saveNewMember(SignUpRequestDto signUpRequestDto, MultipartFile voiceFile);
 
     String processAudioFile(MultipartFile audioFile);
 
