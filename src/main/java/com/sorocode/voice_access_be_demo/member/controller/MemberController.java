@@ -9,8 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -23,7 +21,7 @@ public class MemberController {
     @PostMapping(value = "/signup", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> signupJson(
             @RequestBody @Valid SignUpRequestDto signUpRequestDto
-    ) throws IOException {
+    ) {
         memberService.saveNewMember(signUpRequestDto, null); // 파일 없음
         return ResponseEntity.ok("회원가입 성공");
     }
@@ -33,7 +31,7 @@ public class MemberController {
     public ResponseEntity<?> signupMultipart(
             @RequestPart(value = "data") @Valid SignUpRequestDto signUpRequestDto,
             @RequestPart(value = "voiceFile", required = false) MultipartFile voiceFile
-    ) throws IOException {
+    ) {
         if (signUpRequestDto == null) {
             throw new IllegalArgumentException("회원가입 데이터가 올바르지 않습니다.");
         }
