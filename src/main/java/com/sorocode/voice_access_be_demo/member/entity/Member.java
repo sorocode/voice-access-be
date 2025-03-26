@@ -30,9 +30,9 @@ public class Member extends BaseEntity {
 
     private LocalDate birthday;
 
-    private Short height;
+    private Float height;
 
-    private Short weight;
+    private Float weight;
 
     private String voiceFileLocation;
 

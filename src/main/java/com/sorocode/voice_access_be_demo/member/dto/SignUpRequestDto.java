@@ -1,8 +1,12 @@
 package com.sorocode.voice_access_be_demo.member.dto;
 
+import com.sorocode.voice_access_be_demo.member.enums.GenderEnum;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+
+import java.time.LocalDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,5 +24,15 @@ public class SignUpRequestDto {
     private String phoneNum;
 
     private String homeAddress;
+
+    @Min(value = 20, message = "가능한 값을 입력해주세요")
+    private Float weight;
+
+    @Min(value = 80, message = "가능한 값을 입력해주세요")
+    private Float height;
+
+    private GenderEnum gender;
+
+    private LocalDate birthday;
 
 }

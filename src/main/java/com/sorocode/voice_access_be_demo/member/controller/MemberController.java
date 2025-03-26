@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -42,15 +43,12 @@ public class MemberController {
     }
 
     /// 출입
-    @PostMapping(value = "/recognize", consumes = {"multipart/form-data"})
-    public ResponseEntity<String> recognizeAudio(@RequestPart("audio") MultipartFile voiceFile) {
-        try {
-            String result = memberService.processAudioFile(voiceFile);
-            return ResponseEntity.ok(result);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    @PostMapping(value = "/login", consumes = {"multipart/form-data"})
+    public Mono<ResponseEntity<String>> recognizeAudio(@RequestPart("audio") MultipartFile voiceFile) {
+        return memberService.processAudioFile(voiceFile)
+                .map(ResponseEntity::ok)
+                .onErrorResume(IllegalArgumentException.class, e ->
+                        Mono.just(ResponseEntity.badRequest().body(e.getMessage())));
     }
-
 
 }

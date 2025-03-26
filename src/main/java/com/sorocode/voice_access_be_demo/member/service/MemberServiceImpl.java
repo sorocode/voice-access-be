@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import reactor.core.publisher.Mono;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +22,7 @@ import java.util.UUID;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
+    private final FileService fileService;
 
     @Value("${file.upload-dir}")  // application.yml에서 설정한 경로 가져오기
     private String uploadDir;
@@ -59,13 +61,16 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public void saveNewMember(SignUpRequestDto signUpRequestDto, List<MultipartFile> voiceFiles) {
-        // 1. 회원 정보 저장
+        // 회원 정보 저장
         Member newMember = new Member();
         newMember.setName(signUpRequestDto.getUsername());
         newMember.setPhoneNumber(signUpRequestDto.getPhoneNum());
         newMember.setAddress(signUpRequestDto.getHomeAddress());
+        newMember.setHeight(signUpRequestDto.getHeight());
+        newMember.setWeight(signUpRequestDto.getWeight());
+        newMember.setGender(signUpRequestDto.getGender());
+        newMember.setBirthday(signUpRequestDto.getBirthday());
 
-        // 2. 음성 파일이 있으면 검증 후 저장 (파일 저장은 트랜잭션과 분리)
         if (voiceFiles.size() == 5) {
             for (var voiceFile : voiceFiles) {
                 validateVoiceFile(voiceFile);
@@ -76,19 +81,21 @@ public class MemberServiceImpl implements MemberService {
             throw new RuntimeException("파일 개수가 5개여야 합니다. 현재 파일 수: " + voiceFiles.size());
         }
 
+        //  트랜잭션 안에서 WebClient 요청을 실행하지 않도록 분리
         memberRepository.save(newMember);
+
+        //  비동기적으로 WebClient 요청 실행 (트랜잭션과 분리)
+        fileService.sendMultipleVoiceFile(signUpRequestDto.getUsername(), voiceFiles)
+                .doOnSuccess(response -> System.out.println("📩 파일 업로드 응답: " + response))
+                .subscribe();  // 구독해서 요청 실행!
     }
 
     @Override
-    public String processAudioFile(MultipartFile audioFile) {
+    public Mono<String> processAudioFile(MultipartFile audioFile) {
         if (audioFile.isEmpty()) {
-            throw new IllegalArgumentException("No audio file received");
+            throw new IllegalArgumentException("오디오 파일이 없습니다.");
         }
-
-        // 파일 저장 또는 음성 인식 처리 로직
-        String fileName = audioFile.getOriginalFilename();
-        long fileSize = audioFile.getSize();
-        System.out.println("fileName = " + fileName);
-        return "Processed file: " + fileName + ", size: " + fileSize + " bytes";
+        // 비동기적으로 WebClient 요청 실행
+        return fileService.sendOneVoiceFile(audioFile);
     }
 }
