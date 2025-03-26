@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -48,8 +49,8 @@ public class MemberServiceImpl implements MemberService {
         try {
             // MultipartFile을 해당 경로에 저장
             Files.copy(voiceFile.getInputStream(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            System.out.println("✅ 음성 파일 저장 완료: " + destinationFile.getAbsolutePath());
-            return destinationFile.getAbsolutePath();
+            System.out.println("✅ 음성 파일 저장 완료: " + destinationFile.getParent());
+            return destinationFile.getParent(); // 파일이 저장된 폴더명 리턴
         } catch (IOException e) {
             throw new RuntimeException("파일 저장 중 오류 발생: " + e.getMessage(), e);
         }
@@ -57,7 +58,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public void saveNewMember(SignUpRequestDto signUpRequestDto, MultipartFile voiceFile) {
+    public void saveNewMember(SignUpRequestDto signUpRequestDto, List<MultipartFile> voiceFiles) {
         // 1. 회원 정보 저장
         Member newMember = new Member();
         newMember.setName(signUpRequestDto.getUsername());
@@ -65,10 +66,14 @@ public class MemberServiceImpl implements MemberService {
         newMember.setAddress(signUpRequestDto.getHomeAddress());
 
         // 2. 음성 파일이 있으면 검증 후 저장 (파일 저장은 트랜잭션과 분리)
-        if (voiceFile != null && !voiceFile.isEmpty()) {
-            validateVoiceFile(voiceFile);
-            String voiceFileLocation = saveVoiceFile(voiceFile, signUpRequestDto.getUsername());
-            newMember.setVoiceFileLocation(voiceFileLocation);
+        if (voiceFiles.size() == 5) {
+            for (var voiceFile : voiceFiles) {
+                validateVoiceFile(voiceFile);
+                String voiceFileLocation = saveVoiceFile(voiceFile, signUpRequestDto.getUsername());
+                newMember.setVoiceFileLocation(voiceFileLocation);
+            }
+        } else {
+            throw new RuntimeException("파일 개수가 5개여야 합니다. 현재 파일 수: " + voiceFiles.size());
         }
 
         memberRepository.save(newMember);
