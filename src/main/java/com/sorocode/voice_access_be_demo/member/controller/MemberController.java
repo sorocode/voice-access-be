@@ -46,7 +46,7 @@ public class MemberController {
     @PostMapping(value = "/login", consumes = {"multipart/form-data"})
     public Mono<ResponseEntity<String>> recognizeAudio(@RequestPart("audio") MultipartFile voiceFile) {
         return memberService.processAudioFile(voiceFile)
-                .map(response -> ResponseEntity.ok(response))
+                .map(ResponseEntity::ok)
                 .onErrorResume(IllegalArgumentException.class, e ->
                         Mono.just(ResponseEntity.badRequest().body(e.getMessage())));
     }

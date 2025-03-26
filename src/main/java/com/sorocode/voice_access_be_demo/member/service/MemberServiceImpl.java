@@ -70,7 +70,7 @@ public class MemberServiceImpl implements MemberService {
         newMember.setWeight(signUpRequestDto.getWeight());
         newMember.setGender(signUpRequestDto.getGender());
         newMember.setBirthday(signUpRequestDto.getBirthday());
-        
+
         if (voiceFiles.size() == 5) {
             for (var voiceFile : voiceFiles) {
                 validateVoiceFile(voiceFile);
@@ -96,7 +96,6 @@ public class MemberServiceImpl implements MemberService {
             throw new IllegalArgumentException("오디오 파일이 없습니다.");
         }
         // 비동기적으로 WebClient 요청 실행
-        Mono<String> stringMono = fileService.sendOneVoiceFile(audioFile);
-        return stringMono;
+        return fileService.sendOneVoiceFile(audioFile);
     }
 }
