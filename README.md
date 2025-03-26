@@ -6,4 +6,5 @@
 - Language: Java 21
 - IDE: Intellij
 - DB: MySQL, H2(Test)
+- build tool: gradle
 - etc: webflux
