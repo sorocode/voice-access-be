@@ -17,11 +17,13 @@ public interface MemberService {
 
     List<Member> getMembers();
 
+    List<Member> getMembersByUsername(String username);
+
     Member getMemberByPhoneNumber(String phoneNumber);
 
     Member getMemberById(String userId);
 
     void deleteMemberById(String userId);
-    
+
     Member updateMember(String userId, PatchRequestDto patchRequestDto);
 }

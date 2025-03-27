@@ -56,14 +56,21 @@ public class MemberController {
 
     // 조회
     @GetMapping("/users")
-    public ResponseEntity<?> getMembers(@RequestParam(value = "phoneNumber", required = false) String phoneNumber) {
-        if (phoneNumber == null) { // 전체 조회
-            List<Member> members = memberService.getMembers();
+    public ResponseEntity<?> getMembers(@RequestParam(value = "phoneNumber", required = false) String phoneNumber,
+                                        @RequestParam(value = "username", required = false) String username) {
+        if (phoneNumber == null) {
+            List<Member> members;
+            if (username == null) { // 전체조회
+                members = memberService.getMembers();
+            } else { // 유저명으로 조회
+                members = memberService.getMembersByUsername(username);
+            }
             if (members.isEmpty()) {
                 return ResponseEntity.noContent().build();
             }
             return ResponseEntity.ok(members);
-        } else { // 특정 전화번호 조회
+
+        } else { // 전화번호로 조회
             Member member = memberService.getMemberByPhoneNumber(phoneNumber);
             if (member == null) {
                 return ResponseEntity.noContent().build();

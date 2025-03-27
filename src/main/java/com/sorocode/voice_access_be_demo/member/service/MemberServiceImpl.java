@@ -76,6 +76,12 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public List<Member> getMembersByUsername(String username) {
+        return memberRepository.getMembersByName(username);
+    }
+
+
+    @Override
     public Member getMemberByPhoneNumber(String phoneNumber) {
         return memberRepository.getMemberByPhoneNumber(phoneNumber);
     }
