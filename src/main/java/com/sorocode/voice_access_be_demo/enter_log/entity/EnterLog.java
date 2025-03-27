@@ -1,7 +1,6 @@
 package com.sorocode.voice_access_be_demo.enter_log.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sorocode.voice_access_be_demo.global.BaseEntity;
 import com.sorocode.voice_access_be_demo.member.entity.Member;
 import jakarta.persistence.*;
