@@ -14,6 +14,7 @@ import reactor.core.publisher.Mono;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -55,7 +56,7 @@ public class FileServiceImpl implements FileService {
             try {
                 File convertedFile = convertMultiPartToFile(file);
                 builder.part("audio", new FileSystemResource(convertedFile))
-                        .filename(file.getOriginalFilename());
+                        .filename(Objects.requireNonNull(file.getOriginalFilename()));
             } catch (IOException e) {
                 return Mono.error(new RuntimeException("파일 변환 중 오류 발생", e));
             }
