@@ -1,6 +1,8 @@
 package com.sorocode.voice_access_be_demo.member.controller;
 
+import com.sorocode.voice_access_be_demo.member.dto.PatchRequestDto;
 import com.sorocode.voice_access_be_demo.member.dto.SignUpRequestDto;
+import com.sorocode.voice_access_be_demo.member.entity.Member;
 import com.sorocode.voice_access_be_demo.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +21,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    /// 회원 등록
+    // 회원 등록
     // JSON 요청을 받을 때 (Content-Type: application/json)
     @PostMapping(value = "/signup", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> signupJson(
@@ -42,7 +44,7 @@ public class MemberController {
         return ResponseEntity.ok("회원가입 성공");
     }
 
-    /// 출입
+    // 출입
     @PostMapping(value = "/login", consumes = {"multipart/form-data"})
     public Mono<ResponseEntity<String>> recognizeAudio(@RequestPart("audio") MultipartFile voiceFile) {
         return memberService.processAudioFile(voiceFile)
@@ -51,4 +53,54 @@ public class MemberController {
                         Mono.just(ResponseEntity.badRequest().body(e.getMessage())));
     }
 
+
+    // 조회
+    // FIXME: 백엔드에서는 id 조회만 있어도 될 듯하긴 한데 일단 전화번호 및 이름 조회 추가함(추후 프론트엔드와 연동 시 수정)
+    @GetMapping("/users")
+    public ResponseEntity<?> getMembers(@RequestParam(value = "phoneNumber", required = false) String phoneNumber,
+                                        @RequestParam(value = "username", required = false) String username) {
+        if (phoneNumber == null) {
+            List<Member> members;
+            if (username == null) { // 전체조회
+                members = memberService.getMembers();
+            } else { // 유저명으로 조회
+                members = memberService.getMembersByUsername(username);
+            }
+            if (members.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
+            return ResponseEntity.ok(members);
+
+        } else { // 전화번호로 조회
+            Member member = memberService.getMemberByPhoneNumber(phoneNumber);
+            if (member == null) {
+                return ResponseEntity.noContent().build();
+            }
+            return ResponseEntity.ok(member);
+        }
+    }
+
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<Member> getMemberById(@PathVariable("userId") String userId) {
+        Member memberById = memberService.getMemberById(userId);
+        if (memberById == null) {
+            return ResponseEntity.noContent().build(); // 204 No Content 반환
+        }
+        return ResponseEntity.ok(memberById);
+    }
+
+
+    // 삭제
+    @DeleteMapping("/users/{userId}")
+    public ResponseEntity<Member> deleteMembersByUserId(@PathVariable("userId") String userId) {
+        memberService.deleteMemberById(userId);
+        return ResponseEntity.noContent().build(); // 204 No Content 반환
+    }
+
+    // 수정
+    @PatchMapping("/users/{userId}")
+    public ResponseEntity<Member> updateMemberById(@PathVariable("userId") String userId, @RequestBody @Valid PatchRequestDto patchRequestDto) {
+        memberService.updateMember(userId, patchRequestDto);
+        return ResponseEntity.ok(memberService.getMemberById(userId));
+    }
 }

@@ -1,5 +1,6 @@
 package com.sorocode.voice_access_be_demo.member.service;
 
+import com.sorocode.voice_access_be_demo.member.dto.PatchRequestDto;
 import com.sorocode.voice_access_be_demo.member.dto.SignUpRequestDto;
 import com.sorocode.voice_access_be_demo.member.entity.Member;
 import com.sorocode.voice_access_be_demo.member.repository.MemberRepository;
@@ -30,7 +31,7 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
-
+    // TODO: 추후 빌더 패턴으로 리팩토링하기
     @Override
     @Transactional
     public void saveNewMember(SignUpRequestDto signUpRequestDto, List<MultipartFile> voiceFiles) {
@@ -68,4 +69,50 @@ public class MemberServiceImpl implements MemberService {
         // 비동기적으로 WebClient 요청 실행
         return fileService.sendOneVoiceFile(audioFile);
     }
+
+    @Override
+    public List<Member> getMembers() {
+        return memberRepository.findAll();
+    }
+
+    @Override
+    public List<Member> getMembersByUsername(String username) {
+        return memberRepository.getMembersByName(username);
+    }
+
+
+    @Override
+    public Member getMemberByPhoneNumber(String phoneNumber) {
+        return memberRepository.getMemberByPhoneNumber(phoneNumber);
+    }
+
+    @Override
+    public Member getMemberById(String userId) {
+        Long id = Long.parseLong(userId);
+        return memberRepository.getMemberById(id);
+    }
+
+    @Override
+    @Transactional
+    public void deleteMemberById(String userId) {
+        Long id = Long.parseLong(userId); // String → Long 변환
+        memberRepository.deleteById(id);
+    }
+
+    // TODO: 추후 빌더 패턴으로 리팩토링하기
+    @Override
+    public Member updateMember(String userId, PatchRequestDto patchRequestDto) {
+        Long id = Long.parseLong(userId);
+        Member member = memberRepository.getMemberById(id);
+        member.setName(patchRequestDto.getUsername());
+        member.setPhoneNumber(patchRequestDto.getPhoneNumber());
+        member.setAddress(patchRequestDto.getHomeAddress());
+        member.setHeight(patchRequestDto.getHeight());
+        member.setWeight(patchRequestDto.getWeight());
+        member.setGender(patchRequestDto.getGender());
+        member.setBirthday(patchRequestDto.getBirthday());
+        return memberRepository.save(member);
+    }
+
+
 }

@@ -1,4 +1,4 @@
-package com.sorocode.voice_access_be_demo.member;
+package com.sorocode.voice_access_be_demo.member.error;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

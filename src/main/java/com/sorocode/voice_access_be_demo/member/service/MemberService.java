@@ -1,6 +1,8 @@
 package com.sorocode.voice_access_be_demo.member.service;
 
+import com.sorocode.voice_access_be_demo.member.dto.PatchRequestDto;
 import com.sorocode.voice_access_be_demo.member.dto.SignUpRequestDto;
+import com.sorocode.voice_access_be_demo.member.entity.Member;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
 
@@ -13,4 +15,15 @@ public interface MemberService {
 
     Mono<String> processAudioFile(MultipartFile audioFile);
 
+    List<Member> getMembers();
+
+    List<Member> getMembersByUsername(String username);
+
+    Member getMemberByPhoneNumber(String phoneNumber);
+
+    Member getMemberById(String userId);
+
+    void deleteMemberById(String userId);
+
+    Member updateMember(String userId, PatchRequestDto patchRequestDto);
 }
