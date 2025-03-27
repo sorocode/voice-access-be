@@ -55,6 +55,7 @@ public class MemberController {
 
 
     // 조회
+    // FIXME: 백엔드에서는 id 조회만 있어도 될 듯하긴 한데 일단 전화번호 및 이름 조회 추가함(추후 프론트엔드와 연동 시 수정)
     @GetMapping("/users")
     public ResponseEntity<?> getMembers(@RequestParam(value = "phoneNumber", required = false) String phoneNumber,
                                         @RequestParam(value = "username", required = false) String username) {
