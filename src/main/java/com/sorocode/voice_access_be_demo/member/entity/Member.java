@@ -37,7 +37,7 @@ public class Member extends BaseEntity {
 
     private Float weight;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EnterLog> enterLogs;
 
     // 값 변경을 위한 update 메서드 추가 (Setter 대신 사용)
