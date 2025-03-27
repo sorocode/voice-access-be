@@ -21,7 +21,7 @@ public class FileServiceImpl implements FileService {
     private final WebClient webClient;
 
     @Override
-    public Mono<String> sendOneVoiceFile(MultipartFile voiceFile) {
+    public Mono<String> sendOneVoiceFile(MultipartFile voiceFile) { // 로그인용(음성파일 하나만 받음)
         try {
             // MultipartFile을 File로 변환
             File convertedFile = convertMultiPartToFile(voiceFile);
@@ -42,8 +42,9 @@ public class FileServiceImpl implements FileService {
         }
     }
 
+    // TODO: 원할한 로그인을 위해 유저명 이외에 다른 파라미터(전화번호 등)으로 변경 혹은 추가할 예정
     @Override
-    public Mono<String> sendMultipleVoiceFile(String username, List<MultipartFile> voiceFiles) {
+    public Mono<String> sendMultipleVoiceFile(String username, List<MultipartFile> voiceFiles) { // 회원등록용(유저명 및 음성파일들 받음)
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
 
         // 이름 추가
@@ -72,7 +73,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public File convertMultiPartToFile(MultipartFile file) throws IOException {
+    public File convertMultiPartToFile(MultipartFile file) throws IOException { // MultipartFile -> File로 변환해주는 헬퍼함수
         File convFile = new File(System.getProperty("java.io.tmpdir") + "/" + file.getOriginalFilename());
         file.transferTo(convFile);
         return convFile;
