@@ -68,4 +68,29 @@ public class MemberServiceImpl implements MemberService {
         // 비동기적으로 WebClient 요청 실행
         return fileService.sendOneVoiceFile(audioFile);
     }
+
+    @Override
+    public List<Member> getMembers() {
+        return memberRepository.findAll();
+    }
+
+    @Override
+    public Member getMemberByPhoneNumber(String phoneNumber) {
+        return memberRepository.getMemberByPhoneNumber(phoneNumber);
+    }
+
+    @Override
+    public Member getMemberById(String userId) {
+        Long id = Long.parseLong(userId);
+        return memberRepository.getMemberById(id);
+    }
+
+    @Override
+    @Transactional
+    public void deleteMemberById(String userId) {
+        Long id = Long.parseLong(userId); // String → Long 변환
+        memberRepository.deleteById(id);
+    }
+
+
 }

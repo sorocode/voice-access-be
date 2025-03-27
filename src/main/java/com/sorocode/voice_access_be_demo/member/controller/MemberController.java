@@ -1,6 +1,7 @@
 package com.sorocode.voice_access_be_demo.member.controller;
 
 import com.sorocode.voice_access_be_demo.member.dto.SignUpRequestDto;
+import com.sorocode.voice_access_be_demo.member.entity.Member;
 import com.sorocode.voice_access_be_demo.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    /// 회원 등록
+    // 회원 등록
     // JSON 요청을 받을 때 (Content-Type: application/json)
     @PostMapping(value = "/signup", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> signupJson(
@@ -42,7 +43,7 @@ public class MemberController {
         return ResponseEntity.ok("회원가입 성공");
     }
 
-    /// 출입
+    // 출입
     @PostMapping(value = "/login", consumes = {"multipart/form-data"})
     public Mono<ResponseEntity<String>> recognizeAudio(@RequestPart("audio") MultipartFile voiceFile) {
         return memberService.processAudioFile(voiceFile)
@@ -50,5 +51,43 @@ public class MemberController {
                 .onErrorResume(IllegalArgumentException.class, e ->
                         Mono.just(ResponseEntity.badRequest().body(e.getMessage())));
     }
+
+
+    // 조회
+    @GetMapping("/users")
+    public ResponseEntity<?> getMembers(@RequestParam(value = "phoneNumber", required = false) String phoneNumber) {
+        if (phoneNumber == null) { // 전체 조회
+            List<Member> members = memberService.getMembers();
+            if (members.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
+            return ResponseEntity.ok(members);
+        } else { // 특정 전화번호 조회
+            Member member = memberService.getMemberByPhoneNumber(phoneNumber);
+            if (member == null) {
+                return ResponseEntity.noContent().build();
+            }
+            return ResponseEntity.ok(member);
+        }
+    }
+
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<Member> getMemberById(@PathVariable("userId") String userId) {
+        Member memberById = memberService.getMemberById(userId);
+        if (memberById == null) {
+            return ResponseEntity.noContent().build(); // 204 No Content 반환
+        }
+        return ResponseEntity.ok(memberById);
+    }
+
+
+    // 삭제
+    @DeleteMapping("/users/{userId}")
+    public ResponseEntity<Member> deleteMembersByUserId(@PathVariable("userId") String userId) {
+        memberService.deleteMemberById(userId);
+        return ResponseEntity.noContent().build(); // 204 No Content 반환
+    }
+
+    // TODO: 수정
 
 }
