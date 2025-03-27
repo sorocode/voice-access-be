@@ -1,5 +1,6 @@
 package com.sorocode.voice_access_be_demo.member.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.sorocode.voice_access_be_demo.enter_log.entity.EnterLog;
 import com.sorocode.voice_access_be_demo.global.BaseEntity;
 import com.sorocode.voice_access_be_demo.member.enums.GenderEnum;
@@ -51,7 +52,7 @@ public class Member extends BaseEntity {
                 .birthday(birthday)
                 .height(height)
                 .weight(weight)
-                .enterLogs(this.enterLogs) // 기존 로그 데이터 유지
+                .enterLogs(enterLogs)
                 .build();
     }
 }

@@ -1,5 +1,7 @@
 package com.sorocode.voice_access_be_demo.enter_log.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sorocode.voice_access_be_demo.global.BaseEntity;
 import com.sorocode.voice_access_be_demo.member.entity.Member;
 import jakarta.persistence.*;
@@ -22,6 +24,7 @@ public class EnterLog extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false) // Member와 연결
+    @JsonBackReference
     private Member member;
 
     // 값 변경을 위한 메서드 추가 (Setter 제거)
