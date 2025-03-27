@@ -1,5 +1,7 @@
 package com.sorocode.voice_access_be_demo.member.controller;
 
+import com.sorocode.voice_access_be_demo.enter_log.entity.EnterLog;
+import com.sorocode.voice_access_be_demo.enter_log.service.EnterLogService;
 import com.sorocode.voice_access_be_demo.member.dto.PatchRequestDto;
 import com.sorocode.voice_access_be_demo.member.dto.SignUpRequestDto;
 import com.sorocode.voice_access_be_demo.member.entity.Member;
@@ -20,6 +22,7 @@ import java.util.List;
 public class MemberController {
 
     private final MemberService memberService;
+    private final EnterLogService enterLogService;
 
     // 회원 등록
     // JSON 요청을 받을 때 (Content-Type: application/json)
@@ -48,7 +51,16 @@ public class MemberController {
     @PostMapping(value = "/login", consumes = {"multipart/form-data"})
     public Mono<ResponseEntity<String>> recognizeAudio(@RequestPart("audio") MultipartFile voiceFile) {
         return memberService.processAudioFile(voiceFile)
-                .map(ResponseEntity::ok)
+                .flatMap(phoneNumber -> {
+                    // 음성 인식 성공 시 체크인 수행
+                    try {
+                        EnterLog enterLog = enterLogService.checkIn(phoneNumber);
+                        System.out.println("체크인 시간 = " + enterLog.getCheckInTime());
+                        return Mono.just(ResponseEntity.ok("체크인 성공: " + phoneNumber));
+                    } catch (Exception e) {
+                        return Mono.just(ResponseEntity.internalServerError().body("체크인 실패: " + e.getMessage()));
+                    }
+                })
                 .onErrorResume(IllegalArgumentException.class, e ->
                         Mono.just(ResponseEntity.badRequest().body(e.getMessage())));
     }

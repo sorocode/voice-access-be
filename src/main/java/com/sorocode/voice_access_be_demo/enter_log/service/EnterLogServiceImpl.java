@@ -19,8 +19,8 @@ public class EnterLogServiceImpl implements EnterLogService {
 
     @Override
     @Transactional
-    public EnterLog checkIn(Long memberId) {
-        Member member = memberRepository.findById(memberId)
+    public EnterLog checkIn(String phoneNumber) {
+        Member member = memberRepository.getMemberByPhoneNumber(phoneNumber)
                 .orElseThrow(() -> new RuntimeException("회원이 존재하지 않습니다."));
 
         EnterLog log = EnterLog.builder()

@@ -6,7 +6,6 @@ import com.sorocode.voice_access_be_demo.member.entity.Member;
 import com.sorocode.voice_access_be_demo.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
@@ -20,9 +19,6 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final FileService fileService;
 
-    @Value("${file.upload-dir}")  // application.yml에서 설정한 경로 가져오기
-    private String uploadDir;
-
     @Override
     public void validateVoiceFile(MultipartFile voiceFile) {
         String contentType = voiceFile.getContentType();
@@ -31,11 +27,24 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
-    // TODO: 추후 빌더 패턴으로 리팩토링하기
     @Override
     @Transactional
     public void saveNewMember(SignUpRequestDto signUpRequestDto, List<MultipartFile> voiceFiles) {
-        // 회원 정보 저장
+        if (voiceFiles.size() != 5) {
+            throw new RuntimeException("파일 개수가 5개여야 합니다. 현재 파일 수: " + voiceFiles.size());
+        }
+
+        for (MultipartFile voiceFile : voiceFiles) {
+            validateVoiceFile(voiceFile);
+        }
+
+        // Flask 요청 완료까지 기다림
+        String flaskResponse = fileService.sendMultipleVoiceFile(signUpRequestDto.getPhoneNumber(), voiceFiles)
+                .block(); // 동기적으로 대기
+
+        System.out.println("📩 파일 업로드 응답: " + flaskResponse);
+
+        // Flask 요청 성공 후 회원 저장
         Member newMember = Member.builder()
                 .name(signUpRequestDto.getUsername())
                 .phoneNumber(signUpRequestDto.getPhoneNumber())
@@ -46,20 +55,7 @@ public class MemberServiceImpl implements MemberService {
                 .birthday(signUpRequestDto.getBirthday())
                 .build();
 
-        if (voiceFiles.size() == 5) {
-            for (var voiceFile : voiceFiles) {
-                validateVoiceFile(voiceFile);
-            }
-            //  비동기적으로 WebClient 요청 실행
-            fileService.sendMultipleVoiceFile(signUpRequestDto.getUsername(), voiceFiles)
-                    .doOnSuccess(response -> System.out.println("📩 파일 업로드 응답: " + response))
-                    .subscribe();  // 구독해서 요청 실행!
-        } else {
-            throw new RuntimeException("파일 개수가 5개여야 합니다. 현재 파일 수: " + voiceFiles.size());
-        }
-
         memberRepository.save(newMember);
-
     }
 
     @Override
@@ -84,7 +80,8 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Member getMemberByPhoneNumber(String phoneNumber) {
-        return memberRepository.getMemberByPhoneNumber(phoneNumber);
+        return memberRepository.getMemberByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new RuntimeException(phoneNumber + "라는 전화번호를 가진 유저를 찾지 못했습니다."));
     }
 
     @Override

@@ -7,10 +7,10 @@ import java.util.List;
 
 public interface EnterLogService {
     // 체크인
-    EnterLog checkIn(Long memberId);
+    EnterLog checkIn(String phoneNumber);
 
     // 체크아웃
-    EnterLog checkOut(Long memberId);
+    EnterLog checkOut(Long logId);
 
     // 로그 조회
     List<EnterLog> getMemberLogs(Long memberId);
