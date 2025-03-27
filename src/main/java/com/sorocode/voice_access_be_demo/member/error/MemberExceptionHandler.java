@@ -1,4 +1,4 @@
-package com.sorocode.voice_access_be_demo.member;
+package com.sorocode.voice_access_be_demo.member.error;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

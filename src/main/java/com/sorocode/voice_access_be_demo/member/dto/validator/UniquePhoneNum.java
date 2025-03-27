@@ -1,4 +1,4 @@
-package com.sorocode.voice_access_be_demo.member.dto;
+package com.sorocode.voice_access_be_demo.member.dto.validator;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
