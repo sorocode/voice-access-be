@@ -1,5 +1,6 @@
 package com.sorocode.voice_access_be_demo.global;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -10,6 +11,9 @@ import reactor.netty.http.client.HttpClient;
 
 @Configuration
 public class WebClientConfig {
+    @Value("${flask.url}")  // 🔥 yml에서 설정한 값 주입
+    private String flaskUrl;
+
     private static ExchangeFilterFunction logRequest() {
         return ExchangeFilterFunction.ofRequestProcessor(clientRequest -> {
             System.out.println("📤 [요청] " + clientRequest.method() + " " + clientRequest.url());
@@ -30,7 +34,7 @@ public class WebClientConfig {
     @Bean
     public WebClient webClient() {
         return WebClient.builder()
-                .baseUrl("http://127.0.0.1:5001") // 백엔드 API URL
+                .baseUrl(flaskUrl) // 백엔드 API URL
                 .clientConnector(new ReactorClientHttpConnector(HttpClient.create()))
                 .filter(logRequest())  // 요청 로깅
                 .filter(logResponse()) // 응답 로깅

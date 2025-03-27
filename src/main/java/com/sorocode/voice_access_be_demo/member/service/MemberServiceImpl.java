@@ -36,14 +36,15 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void saveNewMember(SignUpRequestDto signUpRequestDto, List<MultipartFile> voiceFiles) {
         // 회원 정보 저장
-        Member newMember = new Member();
-        newMember.setName(signUpRequestDto.getUsername());
-        newMember.setPhoneNumber(signUpRequestDto.getPhoneNumber());
-        newMember.setAddress(signUpRequestDto.getHomeAddress());
-        newMember.setHeight(signUpRequestDto.getHeight());
-        newMember.setWeight(signUpRequestDto.getWeight());
-        newMember.setGender(signUpRequestDto.getGender());
-        newMember.setBirthday(signUpRequestDto.getBirthday());
+        Member newMember = Member.builder()
+                .name(signUpRequestDto.getUsername())
+                .phoneNumber(signUpRequestDto.getPhoneNumber())
+                .address(signUpRequestDto.getHomeAddress())
+                .height(signUpRequestDto.getHeight())
+                .weight(signUpRequestDto.getWeight())
+                .gender(signUpRequestDto.getGender())
+                .birthday(signUpRequestDto.getBirthday())
+                .build();
 
         if (voiceFiles.size() == 5) {
             for (var voiceFile : voiceFiles) {
@@ -99,19 +100,23 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.deleteById(id);
     }
 
-    // TODO: 추후 빌더 패턴으로 리팩토링하기
     @Override
+    @Transactional
     public Member updateMember(String userId, PatchRequestDto patchRequestDto) {
         Long id = Long.parseLong(userId);
-        Member member = memberRepository.getMemberById(id);
-        member.setName(patchRequestDto.getUsername());
-        member.setPhoneNumber(patchRequestDto.getPhoneNumber());
-        member.setAddress(patchRequestDto.getHomeAddress());
-        member.setHeight(patchRequestDto.getHeight());
-        member.setWeight(patchRequestDto.getWeight());
-        member.setGender(patchRequestDto.getGender());
-        member.setBirthday(patchRequestDto.getBirthday());
-        return memberRepository.save(member);
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("유저를 찾지 못했습니다"));
+        // update() 메서드 사용하여 새 객체 생성
+        Member updatedMember = member.update(
+                patchRequestDto.getUsername(),
+                patchRequestDto.getPhoneNumber(),
+                patchRequestDto.getHomeAddress(),
+                patchRequestDto.getGender(),
+                patchRequestDto.getBirthday(),
+                patchRequestDto.getHeight(),
+                patchRequestDto.getWeight()
+        );
+        return memberRepository.save(updatedMember);
     }
 
 
