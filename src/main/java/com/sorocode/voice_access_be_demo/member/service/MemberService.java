@@ -9,8 +9,6 @@ import java.util.List;
 public interface MemberService {
     void validateVoiceFile(MultipartFile voiceFile);
 
-    String saveVoiceFile(MultipartFile voiceFile, String userName);
-
     void saveNewMember(SignUpRequestDto signUpRequestDto, List<MultipartFile> voiceFiles);
 
     Mono<String> processAudioFile(MultipartFile audioFile);
