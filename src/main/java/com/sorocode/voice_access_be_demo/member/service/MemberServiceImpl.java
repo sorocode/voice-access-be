@@ -1,5 +1,6 @@
 package com.sorocode.voice_access_be_demo.member.service;
 
+import com.sorocode.voice_access_be_demo.member.dto.PatchRequestDto;
 import com.sorocode.voice_access_be_demo.member.dto.SignUpRequestDto;
 import com.sorocode.voice_access_be_demo.member.entity.Member;
 import com.sorocode.voice_access_be_demo.member.repository.MemberRepository;
@@ -30,7 +31,7 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
-
+    // TODO: 추후 빌더 패턴으로 리팩토링하기
     @Override
     @Transactional
     public void saveNewMember(SignUpRequestDto signUpRequestDto, List<MultipartFile> voiceFiles) {
@@ -90,6 +91,21 @@ public class MemberServiceImpl implements MemberService {
     public void deleteMemberById(String userId) {
         Long id = Long.parseLong(userId); // String → Long 변환
         memberRepository.deleteById(id);
+    }
+
+    // TODO: 추후 빌더 패턴으로 리팩토링하기
+    @Override
+    public Member updateMember(String userId, PatchRequestDto patchRequestDto) {
+        Long id = Long.parseLong(userId);
+        Member member = memberRepository.getMemberById(id);
+        member.setName(patchRequestDto.getUsername());
+        member.setPhoneNumber(patchRequestDto.getPhoneNumber());
+        member.setAddress(patchRequestDto.getHomeAddress());
+        member.setHeight(patchRequestDto.getHeight());
+        member.setWeight(patchRequestDto.getWeight());
+        member.setGender(patchRequestDto.getGender());
+        member.setBirthday(patchRequestDto.getBirthday());
+        return memberRepository.save(member);
     }
 
 

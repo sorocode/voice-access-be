@@ -10,7 +10,7 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.List;
 
-
+// TODO: 추후 빌더 패턴으로 리팩토링하기(Setter 최소화)
 @Entity
 @Setter
 @Getter

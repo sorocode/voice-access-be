@@ -1,5 +1,6 @@
 package com.sorocode.voice_access_be_demo.member.controller;
 
+import com.sorocode.voice_access_be_demo.member.dto.PatchRequestDto;
 import com.sorocode.voice_access_be_demo.member.dto.SignUpRequestDto;
 import com.sorocode.voice_access_be_demo.member.entity.Member;
 import com.sorocode.voice_access_be_demo.member.service.MemberService;
@@ -88,6 +89,10 @@ public class MemberController {
         return ResponseEntity.noContent().build(); // 204 No Content 반환
     }
 
-    // TODO: 수정
-
+    // 수정
+    @PatchMapping("/users/{userId}")
+    public ResponseEntity<Member> updateMemberById(@PathVariable("userId") String userId, @RequestBody @Valid PatchRequestDto patchRequestDto) {
+        memberService.updateMember(userId, patchRequestDto);
+        return ResponseEntity.ok(memberService.getMemberById(userId));
+    }
 }

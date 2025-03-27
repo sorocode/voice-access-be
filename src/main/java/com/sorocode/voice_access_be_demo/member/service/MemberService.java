@@ -1,5 +1,6 @@
 package com.sorocode.voice_access_be_demo.member.service;
 
+import com.sorocode.voice_access_be_demo.member.dto.PatchRequestDto;
 import com.sorocode.voice_access_be_demo.member.dto.SignUpRequestDto;
 import com.sorocode.voice_access_be_demo.member.entity.Member;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,5 +24,5 @@ public interface MemberService {
     void deleteMemberById(String userId);
 
     // TODO: 멤버 수정 로직
-
+    Member updateMember(String userId, PatchRequestDto patchRequestDto);
 }
