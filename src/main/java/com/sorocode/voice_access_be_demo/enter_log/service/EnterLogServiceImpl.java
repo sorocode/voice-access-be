@@ -23,10 +23,10 @@ public class EnterLogServiceImpl implements EnterLogService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("회원이 존재하지 않습니다."));
 
-        EnterLog log = new EnterLog();
-        log.setMember(member);
-        log.setCheckInTime(LocalDateTime.now());
-
+        EnterLog log = EnterLog.builder()
+                .checkInTime(LocalDateTime.now())
+                .member(member)
+                .build();
         return enterLogRepository.save(log);
     }
 
@@ -35,8 +35,7 @@ public class EnterLogServiceImpl implements EnterLogService {
     public EnterLog checkOut(Long logId) {
         EnterLog log = enterLogRepository.findById(logId)
                 .orElseThrow(() -> new RuntimeException("출입 로그가 존재하지 않습니다."));
-
-        log.setCheckOutTime(LocalDateTime.now());
+        log.updateCheckOutTime(LocalDateTime.now());
         return enterLogRepository.save(log);
     }
 
