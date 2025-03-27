@@ -106,7 +106,6 @@ public class MemberServiceImpl implements MemberService {
         Long id = Long.parseLong(userId);
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("유저를 찾지 못했습니다"));
-        // FIXME: update하면 createdAt이 null이 되는 문제
         // update() 메서드 사용하여 새 객체 생성
         Member updatedMember = member.update(
                 patchRequestDto.getUsername(),
