@@ -2,7 +2,6 @@ package com.sorocode.voice_access_be_demo.member.dto;
 
 import com.sorocode.voice_access_be_demo.member.enums.GenderEnum;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
