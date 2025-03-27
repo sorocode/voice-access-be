@@ -44,7 +44,7 @@ public class MemberController {
             throw new IllegalArgumentException("회원가입 데이터가 올바르지 않습니다.");
         }
         memberService.saveNewMember(signUpRequestDto, voiceFiles); // 파일 있음
-        return ResponseEntity.ok("회원가입 성공");
+        return ResponseEntity.ok(signUpRequestDto.getUsername() + "님의 회원가입이 정상적으로 완료되었습니다!");
     }
 
     // 출입
