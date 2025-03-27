@@ -22,7 +22,6 @@ public interface MemberService {
     Member getMemberById(String userId);
 
     void deleteMemberById(String userId);
-
-    // TODO: 멤버 수정 로직
+    
     Member updateMember(String userId, PatchRequestDto patchRequestDto);
 }
