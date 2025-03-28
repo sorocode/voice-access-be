@@ -1,0 +1,7 @@
+.idea
+.git
+.gitignore
+.gitattributes
+.DS_STORE
+/test-results
+/reports
