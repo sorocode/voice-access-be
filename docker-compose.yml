@@ -1,0 +1,51 @@
+# 스프링서버와 flask 동시에 올릴때의 docker-compose 파일
+
+services:
+  app:
+    build:
+      context: .
+    #      platform: linux/arm64  #  ARM 대응
+    container_name: voice-springboot
+    depends_on:
+      - db
+      - flask
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/voice-access-db
+      SPRING_DATASOURCE_USERNAME: sorocode
+      SPRING_DATASOURCE_PASSWORD: 1111
+      FLASK_URL: http://flask:5001  # 필요 시 application.yml에서 참조 가능
+    ports:
+      - "8080:8080"
+    networks:
+      - backend
+
+  db:
+    image: mysql:8.0
+    #    platform: linux/arm64  #  ARM 대응
+    container_name: voice-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: voice-access-db
+      MYSQL_USER: sorocode
+      MYSQL_PASSWORD: 1111
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - backend
+
+  flask:
+    build:
+      context: ../voice_access_flask  # Flask Dockerfile이 있는 경로 (Spring과 병렬 위치)
+    container_name: flask
+    ports:
+      - "5001:5001"
+    networks:
+      - backend
+
+networks:
+  backend:
+
+volumes:
+  db_data:
