@@ -1,5 +1,3 @@
-# 스프링서버와 flask 동시에 올릴때의 docker-compose 파일
-
 services:
   app:
     build:
@@ -8,12 +6,12 @@ services:
     container_name: voice-springboot
     depends_on:
       - db
-      - flask
+    #      - flask
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/voice-access-db
-      SPRING_DATASOURCE_USERNAME: sorocode
-      SPRING_DATASOURCE_PASSWORD: 1111
-      FLASK_URL: http://flask:5001  # 필요 시 application.yml에서 참조 가능
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      FLASK_URL: http://flask:5001  # TODO: 플라스크 배포 후 수정
     ports:
       - "8080:8080"
     networks:
@@ -24,10 +22,10 @@ services:
     #    platform: linux/arm64  #  ARM 대응
     container_name: voice-mysql
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: voice-access-db
-      MYSQL_USER: sorocode
-      MYSQL_PASSWORD: 1111
+      MYSQL_USER: ${SPRING_DATASOURCE_USERNAME}
+      MYSQL_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
     ports:
       - "3306:3306"
     volumes:
@@ -35,14 +33,14 @@ services:
     networks:
       - backend
 
-  flask:
-    build:
-      context: ../voice_access_flask  # Flask Dockerfile이 있는 경로 (Spring과 병렬 위치)
-    container_name: flask
-    ports:
-      - "5001:5001"
-    networks:
-      - backend
+#  flask:
+#    build:
+#      context: ../voice_access_flask  # Flask Dockerfile이 있는 경로 (Spring과 병렬 위치)
+#    container_name: flask
+#    ports:
+#      - "5001:5001"
+#    networks:
+#      - backend
 
 networks:
   backend:
