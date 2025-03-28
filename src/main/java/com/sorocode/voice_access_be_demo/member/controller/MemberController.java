@@ -6,6 +6,8 @@ import com.sorocode.voice_access_be_demo.member.dto.PatchRequestDto;
 import com.sorocode.voice_access_be_demo.member.dto.SignUpRequestDto;
 import com.sorocode.voice_access_be_demo.member.entity.Member;
 import com.sorocode.voice_access_be_demo.member.service.MemberService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -19,23 +21,26 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
+@Tag(name = "User API", description = "사용자 관련 기능을 담당하는 컨트롤러")
 public class MemberController {
 
     private final MemberService memberService;
     private final EnterLogService enterLogService;
 
-    // 회원 등록
-    // JSON 요청을 받을 때 (Content-Type: application/json)
-    @PostMapping(value = "/signup", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> signupJson(
-            @RequestBody @Valid SignUpRequestDto signUpRequestDto
-    ) {
-        memberService.saveNewMember(signUpRequestDto, null); // 파일 없음
-        return ResponseEntity.ok("회원가입 성공");
-    }
+//    // 회원 등록
+//    // JSON 요청을 받을 때 (Content-Type: application/json)
+//    @PostMapping(value = "/signup", consumes = MediaType.APPLICATION_JSON_VALUE)
+//    @Operation(summary = "음성 없이 회원가입(application/json)")
+//    public ResponseEntity<String> signupJson(
+//            @RequestBody @Valid SignUpRequestDto signUpRequestDto
+//    ) {
+//        memberService.saveNewMember(signUpRequestDto, null); // 파일 없음
+//        return ResponseEntity.ok("회원가입 성공");
+//    }
 
     // multipart/form-data 요청을 받을 때 (Content-Type: multipart/form-data)
     @PostMapping(value = "/signup", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "회원가입(multipart/form-data)")
     public ResponseEntity<?> signupMultipart(
             @RequestPart(value = "data") @Valid SignUpRequestDto signUpRequestDto,
             @RequestPart(value = "voiceFiles", required = false) List<MultipartFile> voiceFiles
@@ -49,6 +54,7 @@ public class MemberController {
 
     // 출입
     @PostMapping(value = "/login", consumes = {"multipart/form-data"})
+    @Operation(summary = "로그인(multipart/form-data)")
     public Mono<ResponseEntity<String>> recognizeAudio(@RequestPart("audio") MultipartFile voiceFile) {
         return memberService.processAudioFile(voiceFile)
                 .flatMap(phoneNumber -> {
@@ -93,6 +99,7 @@ public class MemberController {
     }
 
     @GetMapping("/users/{userId}")
+    @Operation(summary = "userId로 특정 유저 조회")
     public ResponseEntity<Member> getMemberById(@PathVariable("userId") String userId) {
         Member memberById = memberService.getMemberById(userId);
         if (memberById == null) {
@@ -104,13 +111,15 @@ public class MemberController {
 
     // 삭제
     @DeleteMapping("/users/{userId}")
+    @Operation(summary = "유저 Id를 통해 유저를 삭제")
     public ResponseEntity<Member> deleteMembersByUserId(@PathVariable("userId") String userId) {
         memberService.deleteMemberById(userId);
         return ResponseEntity.noContent().build(); // 204 No Content 반환
     }
 
     // 수정
-    @PatchMapping("/users/{userId}")
+    @PatchMapping(value = "/users/{userId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "유저 수정(application/json)")
     public ResponseEntity<Member> updateMemberById(@PathVariable("userId") String userId, @RequestBody @Valid PatchRequestDto patchRequestDto) {
         memberService.updateMember(userId, patchRequestDto);
         return ResponseEntity.ok(memberService.getMemberById(userId));
