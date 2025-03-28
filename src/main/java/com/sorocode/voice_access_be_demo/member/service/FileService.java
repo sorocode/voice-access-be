@@ -10,7 +10,7 @@ import java.util.List;
 public interface FileService {
     Mono<String> sendOneVoiceFile(MultipartFile voiceFile);
 
-    Mono<String> sendMultipleVoiceFile(String username, List<MultipartFile> voiceFiles);
+    Mono<String> sendMultipleVoiceFile(String phoneNumber, List<MultipartFile> voiceFiles);
 
     File convertMultiPartToFile(MultipartFile file) throws IOException;
 }

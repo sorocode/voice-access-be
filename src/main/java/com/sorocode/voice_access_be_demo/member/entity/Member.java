@@ -1,5 +1,6 @@
 package com.sorocode.voice_access_be_demo.member.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.sorocode.voice_access_be_demo.enter_log.entity.EnterLog;
 import com.sorocode.voice_access_be_demo.global.BaseEntity;
 import com.sorocode.voice_access_be_demo.member.enums.GenderEnum;
@@ -37,7 +38,7 @@ public class Member extends BaseEntity {
 
     private Float weight;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EnterLog> enterLogs;
 
     // 값 변경을 위한 update 메서드 추가 (Setter 대신 사용)
@@ -51,7 +52,7 @@ public class Member extends BaseEntity {
                 .birthday(birthday)
                 .height(height)
                 .weight(weight)
-                .enterLogs(this.enterLogs) // 기존 로그 데이터 유지
+                .enterLogs(enterLogs)
                 .build();
     }
 }

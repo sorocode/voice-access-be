@@ -45,11 +45,11 @@ public class FileServiceImpl implements FileService {
 
     // TODO: 원할한 로그인을 위해 유저명 이외에 다른 파라미터(전화번호 등)으로 변경 혹은 추가할 예정
     @Override
-    public Mono<String> sendMultipleVoiceFile(String username, List<MultipartFile> voiceFiles) { // 회원등록용(유저명 및 음성파일들 받음)
+    public Mono<String> sendMultipleVoiceFile(String phoneNumber, List<MultipartFile> voiceFiles) { // 회원등록용(유저명 및 음성파일들 받음)
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
 
-        // 이름 추가
-        builder.part("username", username);
+        // 전화번호 추가
+        builder.part("phoneNumber", phoneNumber);
 
         // 파일을 직접 변환 후 추가
         for (MultipartFile file : voiceFiles) {
