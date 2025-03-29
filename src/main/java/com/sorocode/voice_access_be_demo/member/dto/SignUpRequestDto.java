@@ -19,13 +19,13 @@ public class SignUpRequestDto {
 
     @NotNull(message = "이름은 필수 입력값입니다.")
     @Size(min = 3, message = "이름은 최소 3자 이상이어야 합니다.")
-    @Schema(description = "사용자 이름", example = "홍길동", required = true)
+    @Schema(description = "사용자 이름", example = "홍길동")
     private String username;
 
     @UniquePhoneNum
     @NotNull(message = "전화번호는 필수 입력값입니다.")
     @Size(min = 8, message = "전화번호는 최소 8자 이상이어야 합니다.")
-    @Schema(description = "사용자 전화번호", example = "010-1234-5678", required = true)
+    @Schema(description = "사용자 전화번호", example = "010-1234-5678")
     private String phoneNumber;
 
     @Schema(description = "사용자 주소", example = "대구광역시 북구 대학로 80 경북대학교")
