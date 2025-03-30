@@ -2,7 +2,6 @@ package com.sorocode.voice_access_be_demo.member.service;
 
 import com.sorocode.voice_access_be_demo.member.dto.PatchRequestDto;
 import com.sorocode.voice_access_be_demo.member.dto.SignUpMultipartRequestDto;
-import com.sorocode.voice_access_be_demo.member.dto.SignUpRequestDto;
 import com.sorocode.voice_access_be_demo.member.entity.Member;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
