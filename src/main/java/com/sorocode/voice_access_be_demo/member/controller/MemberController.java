@@ -3,10 +3,15 @@ package com.sorocode.voice_access_be_demo.member.controller;
 import com.sorocode.voice_access_be_demo.enter_log.entity.EnterLog;
 import com.sorocode.voice_access_be_demo.enter_log.service.EnterLogService;
 import com.sorocode.voice_access_be_demo.member.dto.PatchRequestDto;
+import com.sorocode.voice_access_be_demo.member.dto.SignUpMultipartRequestDto;
 import com.sorocode.voice_access_be_demo.member.dto.SignUpRequestDto;
 import com.sorocode.voice_access_be_demo.member.entity.Member;
 import com.sorocode.voice_access_be_demo.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -42,14 +47,13 @@ public class MemberController {
     @PostMapping(value = "/signup", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "회원가입(multipart/form-data)")
     public ResponseEntity<?> signupMultipart(
-            @RequestPart(value = "data") @Valid SignUpRequestDto signUpRequestDto,
-            @RequestPart(value = "voiceFiles", required = false) List<MultipartFile> voiceFiles
+            @ModelAttribute SignUpMultipartRequestDto request
     ) {
-        if (signUpRequestDto == null) {
+        if (request == null) {
             throw new IllegalArgumentException("회원가입 데이터가 올바르지 않습니다.");
         }
-        memberService.saveNewMember(signUpRequestDto, voiceFiles); // 파일 있음
-        return ResponseEntity.ok(signUpRequestDto.getUsername() + "님의 회원가입이 정상적으로 완료되었습니다!");
+        memberService.saveNewMember(request); // 파일 있음
+        return ResponseEntity.ok(request.getUsername() + "님의 회원가입이 정상적으로 완료되었습니다!");
     }
 
     // 출입
