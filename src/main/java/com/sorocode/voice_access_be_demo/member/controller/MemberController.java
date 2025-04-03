@@ -61,7 +61,8 @@ public class MemberController {
                     try {
                         EnterLog enterLog = enterLogService.checkIn(phoneNumber);
                         System.out.println("체크인 시간 = " + enterLog.getCheckInTime());
-                        return Mono.just(ResponseEntity.ok("체크인 성공: " + phoneNumber));
+                        Member loginMmber = memberService.getMemberByPhoneNumber(phoneNumber);
+                        return Mono.just(ResponseEntity.ok(loginMmber.getName() + "님 환영합니다!"));
                     } catch (Exception e) {
                         return Mono.just(ResponseEntity.internalServerError().body("체크인 실패: " + e.getMessage()));
                     }
