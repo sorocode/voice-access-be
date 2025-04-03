@@ -95,6 +95,8 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void deleteMemberById(String userId) {
         Long id = Long.parseLong(userId); // String → Long 변환
+        memberRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("유저를 찾지 못했습니다: " + userId)); // 유저 찾지 못했을 경우
         memberRepository.deleteById(id);
     }
 
