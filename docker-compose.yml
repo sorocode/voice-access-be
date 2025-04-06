@@ -14,6 +14,7 @@ services:
       FLASK_URL: http://flask:5001  # TODO: 플라스크 배포 후 수정
     ports:
       - "8080:8080"
+    restart: always
     networks:
       - backend
 
@@ -30,6 +31,7 @@ services:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
+    restart: always
     networks:
       - backend
 

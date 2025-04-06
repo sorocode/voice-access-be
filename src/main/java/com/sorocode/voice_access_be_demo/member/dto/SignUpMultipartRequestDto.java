@@ -2,21 +2,23 @@ package com.sorocode.voice_access_be_demo.member.dto;
 
 import com.sorocode.voice_access_be_demo.member.dto.validator.UniquePhoneNum;
 import com.sorocode.voice_access_be_demo.member.enums.GenderEnum;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 @Getter
 @Setter
-public class SignUpRequestDto {
-
+public class SignUpMultipartRequestDto {
     @NotNull(message = "이름은 필수 입력값입니다.")
     @Size(min = 3, message = "이름은 최소 3자 이상이어야 합니다.")
     @Schema(description = "사용자 이름", example = "홍길동")
@@ -45,4 +47,7 @@ public class SignUpRequestDto {
     @Schema(description = "생년월일")
     private LocalDate birthday;
 
+    @Schema(description = "음성 파일들", type = "array", format = "binary")
+    @ArraySchema(schema = @Schema(type = "binary", format = "binary", description = "음성 파일"))
+    private List<MultipartFile> voiceFiles;
 }

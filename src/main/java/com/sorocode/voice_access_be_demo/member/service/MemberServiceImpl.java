@@ -1,7 +1,7 @@
 package com.sorocode.voice_access_be_demo.member.service;
 
 import com.sorocode.voice_access_be_demo.member.dto.PatchRequestDto;
-import com.sorocode.voice_access_be_demo.member.dto.SignUpRequestDto;
+import com.sorocode.voice_access_be_demo.member.dto.SignUpMultipartRequestDto;
 import com.sorocode.voice_access_be_demo.member.entity.Member;
 import com.sorocode.voice_access_be_demo.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
@@ -29,7 +29,8 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public void saveNewMember(SignUpRequestDto signUpRequestDto, List<MultipartFile> voiceFiles) {
+    public void saveNewMember(SignUpMultipartRequestDto request) {
+        List<MultipartFile> voiceFiles = request.getVoiceFiles();
         if (voiceFiles.size() != 5) {
             throw new RuntimeException("파일 개수가 5개여야 합니다. 현재 파일 수: " + voiceFiles.size());
         }
@@ -39,20 +40,20 @@ public class MemberServiceImpl implements MemberService {
         }
 
         // Flask 요청 완료까지 기다림
-        String flaskResponse = fileService.sendMultipleVoiceFile(signUpRequestDto.getPhoneNumber(), voiceFiles)
+        String flaskResponse = fileService.sendMultipleVoiceFile(request.getPhoneNumber(), voiceFiles)
                 .block(); // 동기적으로 대기
 
         System.out.println("📩 파일 업로드 응답: " + flaskResponse);
 
         // Flask 요청 성공 후 회원 저장
         Member newMember = Member.builder()
-                .name(signUpRequestDto.getUsername())
-                .phoneNumber(signUpRequestDto.getPhoneNumber())
-                .address(signUpRequestDto.getHomeAddress())
-                .height(signUpRequestDto.getHeight())
-                .weight(signUpRequestDto.getWeight())
-                .gender(signUpRequestDto.getGender())
-                .birthday(signUpRequestDto.getBirthday())
+                .name(request.getUsername())
+                .phoneNumber(request.getPhoneNumber())
+                .address(request.getHomeAddress())
+                .height(request.getHeight())
+                .weight(request.getWeight())
+                .gender(request.getGender())
+                .birthday(request.getBirthday())
                 .build();
 
         memberRepository.save(newMember);
@@ -94,6 +95,8 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void deleteMemberById(String userId) {
         Long id = Long.parseLong(userId); // String → Long 변환
+        memberRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("유저를 찾지 못했습니다: " + userId)); // 유저 찾지 못했을 경우
         memberRepository.deleteById(id);
     }
 
