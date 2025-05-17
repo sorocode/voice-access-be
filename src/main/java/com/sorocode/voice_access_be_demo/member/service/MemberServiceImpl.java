@@ -23,7 +23,7 @@ public class MemberServiceImpl implements MemberService {
     public void validateVoiceFile(MultipartFile voiceFile) {
         String contentType = voiceFile.getContentType();
         if (contentType == null || !contentType.startsWith("audio/")) {
-            throw new IllegalArgumentException("음성 파일만 업로드 가능합니다.");
+            throw new IllegalArgumentException("음성 파일만 업로드 가능합니다. 현재 파일 타입: " + contentType);
         }
     }
 
@@ -64,6 +64,7 @@ public class MemberServiceImpl implements MemberService {
         if (audioFile.isEmpty()) {
             throw new IllegalArgumentException("오디오 파일이 없습니다.");
         }
+        validateVoiceFile(audioFile);
         // 비동기적으로 WebClient 요청 실행
         return fileService.sendOneVoiceFile(audioFile);
     }
