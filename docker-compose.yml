@@ -27,8 +27,8 @@ services:
       MYSQL_DATABASE: voice-access-db
       MYSQL_USER: ${SPRING_DATASOURCE_USERNAME}
       MYSQL_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
-    ports:
-      - "3306:3306"
+    # ports:
+    #   - "13306:3306"
     volumes:
       - db_data:/var/lib/mysql
     restart: always
