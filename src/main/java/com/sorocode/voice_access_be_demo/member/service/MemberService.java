@@ -21,6 +21,8 @@ public interface MemberService {
 
     Member getMemberByPhoneNumber(String phoneNumber);
 
+    List<Member> getMembersByPhoneNumberSuffix(String last4Digits);
+
     Member getMemberById(String userId);
 
     void deleteMemberById(String userId);

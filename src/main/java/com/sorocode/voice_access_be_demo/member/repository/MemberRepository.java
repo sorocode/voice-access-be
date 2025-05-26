@@ -21,5 +21,5 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     // 전화번호 뒷 4자리로 조회 (Native Query 사용)
     @Query(value = "SELECT * FROM member WHERE RIGHT(phone_number, 4) = :last4Digits", nativeQuery = true)
-    List<Member> findByPhoneNumberSuffix(@Param("last4Digits") String last4Digits);
+    List<Member> getMemberByPhoneNumberSuffix(@Param("last4Digits") String last4Digits);
 }

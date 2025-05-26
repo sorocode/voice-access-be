@@ -71,6 +71,20 @@ public class MemberController {
                         Mono.just(ResponseEntity.badRequest().body(e.getMessage())));
     }
 
+    // 보조 로그인(전화번호 4자리)
+    @PostMapping(value = "/login/phoneNum")
+    @Operation(summary = "로그인(전화번호 뒤 4자리)")
+    public ResponseEntity<String> loginByPhoneNum(@RequestParam(value = "last4Digits") String last4Digits) {
+        try {
+            EnterLog enterLog = enterLogService.checkInByPhoneNumberSuffix(last4Digits);
+            System.out.println("체크인 시간: " + enterLog.getCheckInTime());
+            Member member = memberService.getMembersByPhoneNumberSuffix(last4Digits).get(0);
+            return ResponseEntity.ok(member.getName() + "님 환영합니다!");
+
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("체크인 실패: " + e.getMessage());
+        }
+    }
 
     // 조회
     // FIXME: 백엔드에서는 id 조회만 있어도 될 듯하긴 한데 일단 전화번호 및 이름 조회 추가함(추후 프론트엔드와 연동 시 수정)
