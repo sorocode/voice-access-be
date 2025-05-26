@@ -39,3 +39,8 @@ out/
 application.yml
 application.properties
 .env
+
+
+ .DS_Store
+src/.DS_Store
+src/main/.DS_Store
