@@ -56,34 +56,20 @@ public class MemberController {
     @Operation(summary = "로그인(multipart/form-data)")
     public Mono<ResponseEntity<String>> recognizeAudio(@RequestPart("audio") MultipartFile voiceFile) {
         return memberService.processAudioFile(voiceFile)
-                .flatMap(phoneNumber -> {
-                    // 음성 인식 성공 시 체크인 수행
-                    try {
-                        EnterLog enterLog = enterLogService.checkIn(phoneNumber);
-                        System.out.println("체크인 시간 = " + enterLog.getCheckInTime());
-                        Member loginMmber = memberService.getMemberByPhoneNumber(phoneNumber);
-                        return Mono.just(ResponseEntity.ok(loginMmber.getName() + "님 환영합니다!"));
-                    } catch (Exception e) {
-                        return Mono.just(ResponseEntity.internalServerError().body("체크인 실패: " + e.getMessage()));
-                    }
-                })
-                .onErrorResume(IllegalArgumentException.class, e ->
-                        Mono.just(ResponseEntity.badRequest().body(e.getMessage())));
+                .map(phoneNumber -> {
+                    EnterLog enterLog = enterLogService.checkIn(phoneNumber);
+                    Member member = memberService.getMemberByPhoneNumber(phoneNumber);
+                    return ResponseEntity.ok(member.getName() + "님 환영합니다!");
+                });
     }
 
     // 보조 로그인(전화번호 4자리)
     @PostMapping(value = "/login/phoneNum")
     @Operation(summary = "로그인(전화번호 뒤 4자리)")
     public ResponseEntity<String> loginByPhoneNum(@RequestParam(value = "last4Digits") String last4Digits) {
-        try {
-            EnterLog enterLog = enterLogService.checkInByPhoneNumberSuffix(last4Digits);
-            System.out.println("체크인 시간: " + enterLog.getCheckInTime());
-            Member member = memberService.getMembersByPhoneNumberSuffix(last4Digits).get(0);
-            return ResponseEntity.ok(member.getName() + "님 환영합니다!");
-
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("체크인 실패: " + e.getMessage());
-        }
+        EnterLog enterLog = enterLogService.checkInByPhoneNumberSuffix(last4Digits);
+        Member member = memberService.getMembersByPhoneNumberSuffix(last4Digits).get(0);
+        return ResponseEntity.ok(member.getName() + "님 환영합니다!");
     }
 
     // 조회

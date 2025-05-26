@@ -3,6 +3,7 @@ package com.sorocode.voice_access_be_demo.enter_log.service;
 import com.sorocode.voice_access_be_demo.enter_log.entity.EnterLog;
 import com.sorocode.voice_access_be_demo.enter_log.repository.EnterLogRepository;
 import com.sorocode.voice_access_be_demo.member.entity.Member;
+import com.sorocode.voice_access_be_demo.member.error.MemberNotFoundException;
 import com.sorocode.voice_access_be_demo.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,7 @@ public class EnterLogServiceImpl implements EnterLogService {
     public EnterLog checkInByPhoneNumberSuffix(String last4Digits) {
         List<Member> members = memberRepository.getMemberByPhoneNumberSuffix(last4Digits);
         if (members.isEmpty()) {
-            throw new RuntimeException("회원이 존재하지 않습니다. ");
+            throw new MemberNotFoundException("해당 전화번호 뒷자리에 해당하는 회원이 없습니다. 다시 시도해주세요.");
         }
         Member member = members.get(0);
         EnterLog log = EnterLog.builder()
