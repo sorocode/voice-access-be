@@ -87,6 +87,15 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public List<Member> getMembersByPhoneNumberSuffix(String last4Digits) {
+        List<Member> members = memberRepository.getMemberByPhoneNumberSuffix(last4Digits);
+        if (members.isEmpty()) {
+            throw new RuntimeException(last4Digits + "라는 전화번호 뒷 4자리를 가진 유저를 찾지 못했습니다.");
+        }
+        return members;
+    }
+
+    @Override
     public Member getMemberById(String userId) {
         Long id = Long.parseLong(userId);
         return memberRepository.getMemberById(id);

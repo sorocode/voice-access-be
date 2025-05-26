@@ -9,6 +9,9 @@ public interface EnterLogService {
     // 체크인
     EnterLog checkIn(String phoneNumber);
 
+    // 전화번호 4자리로 체크인
+    EnterLog checkInByPhoneNumberSuffix(String phoneNumber);
+
     // 체크아웃
     EnterLog checkOut(Long logId);
 

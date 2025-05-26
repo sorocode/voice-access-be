@@ -31,6 +31,21 @@ public class EnterLogServiceImpl implements EnterLogService {
     }
 
     @Override
+    public EnterLog checkInByPhoneNumberSuffix(String last4Digits) {
+        List<Member> members = memberRepository.getMemberByPhoneNumberSuffix(last4Digits);
+        if (members.isEmpty()) {
+            throw new RuntimeException("회원이 존재하지 않습니다. ");
+        }
+        Member member = members.get(0);
+        EnterLog log = EnterLog.builder()
+                .checkInTime(LocalDateTime.now())
+                .member(member)
+                .build();
+        return enterLogRepository.save(log);
+    }
+
+
+    @Override
     @Transactional
     public EnterLog checkOut(Long logId) {
         EnterLog log = enterLogRepository.findById(logId)
