@@ -24,7 +24,7 @@
 - BE Framework: Spring 3.4.3
 - ORM: JPA
 - Database: MySQL
-- Container & Orchestration: Docker, Docker Compose
+- Container : Docker, Docker Compose
 
 <div> 
 <br>
