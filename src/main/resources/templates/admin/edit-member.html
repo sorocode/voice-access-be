@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>회원 정보 수정</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<h1>✏️ 회원 정보 수정</h1>
+<a href="/admin/members">← 목록으로</a>
+
+<form method="post" th:action="@{|/admin/members/${member.id}/edit|}">
+    <label>이름: <input name="username" th:value="${member.name}" type="text"/></label><br/>
+    <label>전화번호: <input name="phoneNumber" th:value="${member.phoneNumber}" type="text"/></label><br/>
+    <label>주소: <input name="homeAddress" th:value="${member.address}" type="text"/></label><br/>
+    <label>성별:
+        <select name="gender">
+            <option th:selected="${member.gender == 'MALE'}" value="MALE">남</option>
+            <option th:selected="${member.gender == 'FEMALE'}" value="FEMALE">여</option>
+        </select>
+    </label><br/>
+    <label>생년월일: <input name="birthday" th:value="${member.birthday}" type="date"/></label><br/>
+    <label>키(cm): <input name="height" th:value="${member.height}" type="number"/></label><br/>
+    <label>몸무게(kg): <input name="weight" th:value="${member.weight}" type="number"/></label><br/>
+
+    <button type="submit">수정 완료</button>
+</form>
+</body>
+</html>

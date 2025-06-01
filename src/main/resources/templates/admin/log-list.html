@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>출입 로그</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<h1>📜 출입 로그</h1>
+<a href="/admin">← 홈으로</a>
+<form action="/admin/logs" method="get">
+    <input name="name" placeholder="회원 이름 검색" th:value="${keyword}" type="text"/>
+    <button type="submit">검색</button>
+    <a href="/admin/logs">전체 보기</a>
+</form>
+<table>
+    <thead>
+    <tr>
+        <th>회원 이름</th>
+        <th>전화번호</th>
+        <th>체크인 시간</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="log : ${logs}">
+        <td th:text="${log.member.name}">이름</td>
+        <td th:text="${log.member.phoneNumber}">전화번호</td>
+        <td th:text="${#temporals.format(log.checkInTime, 'yyyy-MM-dd HH:mm:ss')}">시간</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

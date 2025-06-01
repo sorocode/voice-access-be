@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>회원 출입 로그</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<h1 th:text="|${member.name}님의 출입 기록|">출입 기록</h1>
+<a href="/admin/members">← 회원 목록</a>
+<table>
+    <thead>
+    <tr>
+        <th>로그 ID</th>
+        <th>체크인 시간</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="log : ${logs}">
+        <td th:text="${log.id}">로그 ID</td>
+        <td th:text="${log.checkInTime}">체크인 시간</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

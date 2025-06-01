@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>회원 목록</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<h1>👥 회원 목록</h1>
+<a href="/admin">← 홈으로</a>
+<form action="/admin/members" method="get">
+    <input name="name" placeholder="이름 검색" th:value="${keyword}" type="text"/>
+    <button type="submit">검색</button>
+    <a href="/admin/members">전체 보기</a>
+</form>
+<table>
+    <thead>
+    <tr>
+        <th>이름</th>
+        <th>전화번호</th>
+        <th>성별</th>
+        <th>생년월일</th>
+        <th>출입 로그</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="member : ${members}">
+        <td th:text="${member.name}">이름</td>
+        <td th:text="${member.phoneNumber}">전화번호</td>
+        <td th:text="${member.gender}">성별</td>
+        <td th:text="${member.birthday}">생년월일</td>
+        <td>
+            <a th:href="@{|/admin/members/${member.id}/logs|}">로그 보기</a>
+        </td>
+        <td>
+            <a th:href="@{|/admin/members/${member.id}/edit|}">수정</a>
+        </td>
+        <td>
+            <form method="post" onsubmit="return confirm('정말 삭제하시겠습니까?');"
+                  th:action="@{|/admin/members/${member.id}/delete|}">
+                <button type="submit">삭제</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
