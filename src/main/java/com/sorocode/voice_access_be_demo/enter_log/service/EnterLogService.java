@@ -16,7 +16,12 @@ public interface EnterLogService {
     EnterLog checkOut(Long logId);
 
     // 로그 조회
-    List<EnterLog> getMemberLogs(Long memberId);
+    List<EnterLog> getMemberLogs(String memberId);
 
+    // 이름으로 로그 조회
+    List<EnterLog> getLogsByMemberName(String name);
+
+    // 전체 회원 로그 조회
+    List<EnterLog> getAllLogs();
     // TODO: 삭제, 수정 로직
 }

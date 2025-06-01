@@ -5,6 +5,7 @@ import com.sorocode.voice_access_be_demo.enter_log.repository.EnterLogRepository
 import com.sorocode.voice_access_be_demo.member.entity.Member;
 import com.sorocode.voice_access_be_demo.member.error.MemberNotFoundException;
 import com.sorocode.voice_access_be_demo.member.repository.MemberRepository;
+import com.sorocode.voice_access_be_demo.member.service.MemberService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.util.List;
 public class EnterLogServiceImpl implements EnterLogService {
     private final EnterLogRepository enterLogRepository;
     private final MemberRepository memberRepository;
+    private final MemberService memberService;
 
     @Override
     @Transactional
@@ -56,7 +58,20 @@ public class EnterLogServiceImpl implements EnterLogService {
     }
 
     @Override
-    public List<EnterLog> getMemberLogs(Long memberId) {
-        return enterLogRepository.findByMemberId(memberId);
+    public List<EnterLog> getMemberLogs(String memberId) {
+        Long id = Long.parseLong(memberId);
+        return enterLogRepository.findByMemberId(id);
+    }
+
+    @Override
+    public List<EnterLog> getLogsByMemberName(String name) {
+        List<Member> membersByUsername = memberService.getMembersByUsername(name);
+        Long id = membersByUsername.get(0).getId();
+        return enterLogRepository.findByMemberId(id);
+    }
+
+    @Override
+    public List<EnterLog> getAllLogs() {
+        return enterLogRepository.findAll();
     }
 }

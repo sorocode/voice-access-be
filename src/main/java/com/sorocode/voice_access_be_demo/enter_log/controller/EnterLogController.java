@@ -22,7 +22,7 @@ public class EnterLogController {
 
     @GetMapping("/logs/{userId}")
     @Operation(summary = "출입로그조회")
-    public List<EnterLog> getEnterLogs(@PathVariable Long userId) {
+    public List<EnterLog> getEnterLogs(@PathVariable String userId) {
         return enterLogService.getMemberLogs(userId);
     }
 }
