@@ -4,11 +4,15 @@ import com.sorocode.voice_access_be_demo.enter_log.entity.EnterLog;
 import com.sorocode.voice_access_be_demo.enter_log.service.EnterLogService;
 import com.sorocode.voice_access_be_demo.member.dto.PatchRequestDto;
 import com.sorocode.voice_access_be_demo.member.dto.SignUpMultipartRequestDto;
+import com.sorocode.voice_access_be_demo.member.dto.StatsResponseDto;
 import com.sorocode.voice_access_be_demo.member.entity.Member;
+import com.sorocode.voice_access_be_demo.member.repository.MemberRepository;
 import com.sorocode.voice_access_be_demo.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -26,6 +31,7 @@ public class MemberController {
 
     private final MemberService memberService;
     private final EnterLogService enterLogService;
+    private final MemberRepository memberRepository;
 
 //    // 회원 등록
 //    // JSON 요청을 받을 때 (Content-Type: application/json)
@@ -124,4 +130,17 @@ public class MemberController {
         memberService.updateMember(userId, patchRequestDto);
         return ResponseEntity.ok(memberService.getMemberById(userId));
     }
+
+    // 통계 정보 조회
+    @GetMapping("/users/stats/gender")
+    public Result<StatsResponseDto> getStatistics() {
+        return new Result<>(memberService.getStats());
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class Result<T> {
+        private T data;
+    }
+
 }

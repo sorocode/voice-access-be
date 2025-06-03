@@ -2,7 +2,9 @@ package com.sorocode.voice_access_be_demo.member.service;
 
 import com.sorocode.voice_access_be_demo.member.dto.PatchRequestDto;
 import com.sorocode.voice_access_be_demo.member.dto.SignUpMultipartRequestDto;
+import com.sorocode.voice_access_be_demo.member.dto.StatsResponseDto;
 import com.sorocode.voice_access_be_demo.member.entity.Member;
+import com.sorocode.voice_access_be_demo.member.enums.GenderEnum;
 import com.sorocode.voice_access_be_demo.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
+
 
     private final MemberRepository memberRepository;
     private final FileService fileService;
@@ -129,5 +132,13 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.save(updatedMember);
     }
 
+    @Override
+    public StatsResponseDto getStats() {
+        Long total = memberRepository.count();
+        long male = memberRepository.countMemberByGender(GenderEnum.MALE);
+        long female = memberRepository.countMemberByGender(GenderEnum.FEMALE);
+        return new StatsResponseDto(total, male, female);
+
+    }
 
 }
